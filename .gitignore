@@ -1,0 +1,8 @@
+.pio/
+.vscode/
+.DS_Store
+*.o
+*.bin
+
+# Credenciais reais (wifi etc.) — nunca commitar. Copie de Secrets.h.example.
+src/config/Secrets.h
