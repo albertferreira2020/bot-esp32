@@ -35,6 +35,12 @@ void PowerManager::update(uint32_t nowMs, DisplayManager& display, RobotFace& fa
         }
     }
 
+    // Só reduz brilho se o IMU estiver funcionando de verdade: sem ele não
+    // há como detectar "levantou o dispositivo" pra voltar ao brilho máximo
+    // depois, e ficaria escuro pra sempre (parecendo um bug de escurecer
+    // sem parar em vez de uma economia de energia reversível).
+    if (!imuOk_) return;
+
     bool shouldDim = (nowMs - lastMotionAt_) > board::power::IDLE_TIMEOUT_MS;
     if (shouldDim && !dimmed_) {
         dimmed_ = true;
