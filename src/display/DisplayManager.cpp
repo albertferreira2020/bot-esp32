@@ -30,7 +30,7 @@ LGFX::LGFX() {
         // offset_x/offset_y/offset_rotation aqui.
         cfg.offset_x = 0;
         cfg.offset_y = 0;
-        cfg.offset_rotation = 0;
+        cfg.offset_rotation = 2;  // painel monta com a imagem de cabeça pra baixo (0=0°,1=90°,2=180°,3=270°)
         cfg.readable = false;
         cfg.invert = true;  // maioria dos módulos ST7789 240x240 precisa disso
         cfg.rgb_order = false;
