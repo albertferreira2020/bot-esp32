@@ -22,8 +22,14 @@ LGFX::LGFX() {
         cfg.pin_cs = board::LCD_PIN_CS;
         cfg.pin_rst = board::LCD_PIN_RST;
         cfg.pin_busy = -1;
+        // ATENÇÃO: a GRAM do ST7789 tem 320 linhas, mesmo num painel de
+        // 240x240 — memory_height precisa ser 320, não 240. Quando há flip
+        // (offset_rotation >= 4), o LovyanGFX calcula
+        // _rowstart = memory_height - panel_height; com 240 aqui isso dava 0
+        // em vez dos 80 necessários e a imagem inteira subia 80px (cortando
+        // o topo do conteúdo).
         cfg.memory_width = board::SCREEN_WIDTH;
-        cfg.memory_height = board::SCREEN_HEIGHT;
+        cfg.memory_height = 320;
         cfg.panel_width = board::SCREEN_WIDTH;
         cfg.panel_height = board::SCREEN_HEIGHT;
         // Testado no hardware real: offset_rotation=0 fica de cabeça pra

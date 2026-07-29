@@ -55,8 +55,15 @@ void setup() {
     delay(200);
     Serial.println("\n[robot] boot");
 
-    if (!LittleFS.begin(true)) {
-        Serial.println("[robot] LittleFS: falha ao montar (assets ficam indisponiveis, o resto funciona)");
+    // Label explícito e casando com o nome em partitions.csv ("spiffs" —
+    // veja o comentário lá). O mount procura a partição pelo LABEL, não pelo
+    // subtype: com label errado nada de data/ é encontrado e todas as telas
+    // caem nos efeitos procedurais.
+    // formatOnFail=false de propósito: se falhar, é melhor avisar do que
+    // apagar os assets já gravados via 'pio run -t uploadfs'.
+    if (!LittleFS.begin(false, "/littlefs", 10, "spiffs")) {
+        Serial.println("[robot] LittleFS: falha ao montar (assets indisponiveis, o resto funciona)");
+        Serial.println("[robot] rodou 'pio run -e esp32-s3-lcd-13 -t uploadfs'?");
     }
 
     display.begin();

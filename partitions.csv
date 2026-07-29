@@ -1,5 +1,12 @@
 # ESP32-S3-LCD-1.3 — 16MB flash, sem OTA (app único + LittleFS grande para assets)
+#
+# A partição do LittleFS se chama "spiffs" de propósito (é a convenção do
+# Arduino-ESP32): o label default de LittleFS.begin() é "spiffs", e o mount em
+# runtime procura a partição pelo LABEL. Com outro nome aqui, o PlatformIO
+# ainda grava certo (ele acha pelo subtype), mas o firmware não monta nada e
+# todos os assets de data/ ficam invisíveis.
+#
 # Name,      Type, SubType,  Offset,   Size,     Flags
 nvs,         data, nvs,      0x9000,   0x5000,
 app0,        app,  factory,  0x10000,  0x500000,
-littlefs,    data, spiffs,   0x510000, 0xAF0000,
+spiffs,      data, spiffs,   0x510000, 0xAF0000,

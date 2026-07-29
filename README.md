@@ -54,8 +54,15 @@ scanlines) porque não encontra os vídeos de `data/videos/boot|transition`.
 Rode `uploadfs` de novo sempre que mudar algo em `data/`. Pra confirmar que
 os vídeos foram encontrados, veja o monitor serial no boot: deve aparecer
 `[MjpegPlayer] /videos/boot: 155 frames @ 30 fps` (e o mesmo pra
-`/videos/transition`). Se aparecer `nao encontrado`, é sinal de que o
-`uploadfs` não rodou (ou rodou antes de gerar os frames).
+`/videos/transition`).
+
+> **Armadilha do label da partição** (já resolvida, mas fácil de reintroduzir):
+> o mount do LittleFS procura a partição pelo **label** (o campo *Name* de
+> `partitions.csv`), enquanto o `uploadfs` do PlatformIO acha ela pelo
+> **subtype**. Se os dois divergirem, o `uploadfs` grava os arquivos no lugar
+> certo e ainda assim o firmware não monta nada — sem erro nenhum no upload,
+> só o fallback procedural silencioso. Por isso a partição se chama `spiffs`
+> (mesmo sendo LittleFS): é o label default do `LittleFS.begin()`. Não renomeie.
 
 WiFi e localização do clima (`WEATHER_LATITUDE`/`WEATHER_LONGITUDE`, padrão
 Belo Horizonte, MG) ficam em `src/config/Secrets.h` — arquivo local, gerado a
