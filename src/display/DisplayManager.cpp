@@ -26,11 +26,15 @@ LGFX::LGFX() {
         cfg.memory_height = board::SCREEN_HEIGHT;
         cfg.panel_width = board::SCREEN_WIDTH;
         cfg.panel_height = board::SCREEN_HEIGHT;
-        // Se a imagem aparecer deslocada/cortada no seu exemplar, ajuste
-        // offset_x/offset_y/offset_rotation aqui.
+        // O prisma reflete a imagem como um espelho: o painel "de cabeça pra
+        // baixo" olhando direto pra ele é o correto, porque o prisma
+        // desfaz isso na reflexão pro usuário. offset_rotation=2 (180°)
+        // deixava centralizado só olhando o painel cru, mas invertia o
+        // texto (mirror) na hora de ver pelo prisma — por isso volta pra 0.
+        // Se ainda não bater, tente 4 ou 6 aqui (mesma rotação + espelho).
         cfg.offset_x = 0;
         cfg.offset_y = 0;
-        cfg.offset_rotation = 2;  // painel monta com a imagem de cabeça pra baixo (0=0°,1=90°,2=180°,3=270°)
+        cfg.offset_rotation = 0;
         cfg.readable = false;
         cfg.invert = true;  // maioria dos módulos ST7789 240x240 precisa disso
         cfg.rgb_order = false;

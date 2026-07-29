@@ -13,11 +13,10 @@ constexpr uint32_t kBitcoinOrange = 0xF7931A;
 constexpr uint32_t kRiseDurationMs = 1400;
 constexpr uint32_t kSpinDurationMs = 2400;
 
-// "US$ 118.432,50" — separador de milhar '.', centavos ','.
+// "US$ 118.432" — separador de milhar '.', sem centavos (texto maior/mais
+// legível sem estourar a largura da tela em 240px).
 void formatMoneyUSD(double value, char* out, size_t outSize) {
-    long long cents = (long long)llround(value * 100.0);
-    long long whole = cents / 100;
-    int frac = (int)(cents % 100);
+    long long whole = llround(value);
     char wholeBuf[32];
     snprintf(wholeBuf, sizeof(wholeBuf), "%lld", whole);
     int len = (int)strlen(wholeBuf);
@@ -29,7 +28,7 @@ void formatMoneyUSD(double value, char* out, size_t outSize) {
         grouped[gi++] = wholeBuf[i];
     }
     grouped[gi] = '\0';
-    snprintf(out, outSize, "US$ %s,%02d", grouped, frac);
+    snprintf(out, outSize, "US$ %s", grouped);
 }
 }  // namespace
 
@@ -76,24 +75,24 @@ void BitcoinState::render(DisplayManager& display) {
     if (elapsedMs_ >= kRiseDurationMs + kSpinDurationMs) {
         BitcoinSnapshot snap = scheduler_.bitcoin();
         canvas.setTextDatum(textdatum_t::middle_center);
-        canvas.setTextSize(2);
+        canvas.setTextSize(2.7f);
         canvas.setTextColor(display.tint((uint32_t)0xFFFFFF));
 
         if (snap.valid) {
             char priceBuf[48];
             formatMoneyUSD(snap.price, priceBuf, sizeof(priceBuf));
-            canvas.drawString(priceBuf, cx, cy + 75);
+            canvas.drawString(priceBuf, cx, cy + 78);
 
             bool up = snap.changePercent >= 0.0;
             uint32_t arrowColor = up ? board::robot::EYE_COLORS_ALT[1] : board::robot::EYE_COLORS_ALT[3];
             char pctBuf[16];
             snprintf(pctBuf, sizeof(pctBuf), "%.2f%%", std::fabs(snap.changePercent));
 
-            canvas.setTextSize(1.6f);
+            canvas.setTextSize(1.8f);
             canvas.setTextColor(display.tint(arrowColor));
-            canvas.drawString(pctBuf, cx + 14, cy + 100);
+            canvas.drawString(pctBuf, cx + 16, cy + 108);
 
-            int tx = cx - 26, ty = cy + 100;
+            int tx = cx - 28, ty = cy + 108;
             if (up) {
                 canvas.fillTriangle(tx - 6, ty + 5, tx + 6, ty + 5, tx, ty - 6, display.tint(arrowColor));
             } else {
