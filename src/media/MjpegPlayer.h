@@ -28,6 +28,7 @@ class MjpegPlayer {
     uint32_t frameIntervalMs_ = 33;
     uint32_t nextFrameAt_ = 0;
     bool isOpen_ = false;
+    bool warnedMissingFrame_ = false;
 
     uint8_t* scratch_ = nullptr;
     size_t scratchCap_ = 0;

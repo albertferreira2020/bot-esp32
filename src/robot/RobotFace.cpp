@@ -42,6 +42,7 @@ void RobotFace::pickNewMood(uint32_t now) {
         static const Mood kOptions[] = {
             Mood::Idle,   Mood::Idle,    Mood::Curious, Mood::LookLeft, Mood::LookRight,
             Mood::LookUp, Mood::Happy,   Mood::Smiling, Mood::LookUser, Mood::Scared,
+            Mood::Sleepy,
         };
         mood_ = kOptions[random(0, (long)(sizeof(kOptions) / sizeof(kOptions[0])))];
         moodUntil_ = now + (uint32_t)random(2500, 6000);

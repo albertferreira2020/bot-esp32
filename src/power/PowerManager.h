@@ -5,11 +5,10 @@
 class DisplayManager;
 class RobotFace;
 
-// Liga o IMU à economia de energia: 3 min parado -> reduz brilho (overlay,
-// ver DisplayManager::tint); qualquer movimento acima do limiar -> brilho
-// máximo de novo + acorda o robô (RobotFace::triggerWake). Sem o chip
-// detectado, funciona em modo degradado: ainda reduz brilho após o timeout
-// (não tem como saber que "acordou" sem sensor).
+// Liga o IMU ao robô: qualquer movimento acima do limiar aciona
+// RobotFace::triggerWake() ("levantou o dispositivo -> acorda, olha pro
+// usuário"). Brilho do display fica sempre no máximo (sem economia de
+// energia por enquanto, a pedido do usuário).
 class PowerManager {
    public:
     bool begin();
@@ -22,6 +21,4 @@ class PowerManager {
     bool imuOk_ = false;
     float lastMagnitude_ = 0.0f;
     bool hasSample_ = false;
-    uint32_t lastMotionAt_ = 0;
-    bool dimmed_ = false;
 };

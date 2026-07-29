@@ -56,9 +56,7 @@ constexpr uint32_t FRAME_INTERVAL_MS = (uint32_t)(1000.0f / TARGET_FPS);
 // Energia
 // ============================================================================
 namespace power {
-constexpr uint32_t IDLE_TIMEOUT_MS = 3 * 60'000;  // 3 min parado -> dim
-constexpr uint8_t DIM_OVERLAY_ALPHA = 90;          // 0..255, preto por cima (queda suave, ~65% do brilho)
-constexpr float MOTION_WAKE_THRESHOLD_G = 0.35f;   // delta accel p/ "levantou"
+constexpr float MOTION_WAKE_THRESHOLD_G = 0.35f;  // delta accel p/ "levantou" (aciona RobotFace::triggerWake)
 }  // namespace power
 
 // ============================================================================

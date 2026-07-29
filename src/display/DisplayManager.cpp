@@ -26,15 +26,16 @@ LGFX::LGFX() {
         cfg.memory_height = board::SCREEN_HEIGHT;
         cfg.panel_width = board::SCREEN_WIDTH;
         cfg.panel_height = board::SCREEN_HEIGHT;
-        // O prisma reflete a imagem como um espelho: o painel "de cabeça pra
-        // baixo" olhando direto pra ele é o correto, porque o prisma
-        // desfaz isso na reflexão pro usuário. offset_rotation=2 (180°)
-        // deixava centralizado só olhando o painel cru, mas invertia o
-        // texto (mirror) na hora de ver pelo prisma — por isso volta pra 0.
-        // Se ainda não bater, tente 4 ou 6 aqui (mesma rotação + espelho).
+        // Testado no hardware real: offset_rotation=0 fica de cabeça pra
+        // baixo; offset_rotation=2 (rotação 180°) corrige a orientação mas
+        // sai com o texto espelhado (o prisma funciona como espelho, então
+        // uma rotação de 180° não é a mesma coisa que um flip). O que
+        // corrige de verdade é um flip (não uma rotação): offset_rotation
+        // 4-7 no LovyanGFX aplicam a mesma rotação de 0-3 + um flip. Se 4
+        // não ficar perfeito, o próximo candidato é 6 (rotação 180° + flip).
         cfg.offset_x = 0;
         cfg.offset_y = 0;
-        cfg.offset_rotation = 0;
+        cfg.offset_rotation = 4;
         cfg.readable = false;
         cfg.invert = true;  // maioria dos módulos ST7789 240x240 precisa disso
         cfg.rgb_order = false;

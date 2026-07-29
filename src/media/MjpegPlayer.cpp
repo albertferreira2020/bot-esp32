@@ -1,5 +1,6 @@
 #include "media/MjpegPlayer.h"
 
+#include <Arduino.h>
 #include <ArduinoJson.h>
 #include <LittleFS.h>
 #include <TJpg_Decoder.h>
@@ -15,22 +16,34 @@ bool MjpegPlayer::begin(DisplayManager& display, const char* folder) {
 
     String manifestPath = folder_ + "/manifest.json";
     File mf = LittleFS.open(manifestPath.c_str(), "r");
-    if (!mf) return false;
+    if (!mf) {
+        Serial.printf("[MjpegPlayer] %s nao encontrado (rodou 'pio run -t uploadfs'?)\n",
+                      manifestPath.c_str());
+        return false;
+    }
 
     JsonDocument doc;
     DeserializationError err = deserializeJson(doc, mf);
     mf.close();
-    if (err) return false;
+    if (err) {
+        Serial.printf("[MjpegPlayer] %s: manifest.json invalido (%s)\n", folder_.c_str(), err.c_str());
+        return false;
+    }
 
     fps_ = doc["fps"] | 30;
     frameCount_ = doc["frames"] | 0;
     loop_ = doc["loop"] | true;
-    if (frameCount_ <= 0) return false;
+    if (frameCount_ <= 0) {
+        Serial.printf("[MjpegPlayer] %s: manifest.json sem 'frames' valido\n", folder_.c_str());
+        return false;
+    }
+    Serial.printf("[MjpegPlayer] %s: %d frames @ %d fps\n", folder_.c_str(), frameCount_, fps_);
 
     frameIntervalMs_ = 1000 / (uint32_t)(fps_ > 0 ? fps_ : 30);
     currentFrame_ = 0;
     nextFrameAt_ = 0;
     isOpen_ = true;
+    warnedMissingFrame_ = false;
 
     TJpgDec.setJpgScale(1);
     TJpgDec.setSwapBytes(false);
@@ -90,7 +103,11 @@ void MjpegPlayer::update(uint32_t nowMs) {
             s_active = nullptr;
         } else {
             f.close();
+            Serial.printf("[MjpegPlayer] %s: sem PSRAM pra %u bytes\n", path, (unsigned)sz);
         }
+    } else if (!warnedMissingFrame_) {
+        warnedMissingFrame_ = true;
+        Serial.printf("[MjpegPlayer] %s: frame nao encontrado\n", path);
     }
 
     currentFrame_++;

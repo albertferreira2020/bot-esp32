@@ -47,6 +47,16 @@ pio run -e esp32-s3-lcd-13 -t upload     # flash do firmware
 pio device monitor -e esp32-s3-lcd-13
 ```
 
+**`uploadfs` é um passo separado de `upload` e fácil de esquecer.** Sem
+rodar `uploadfs`, a partição LittleFS do dispositivo fica vazia — o
+firmware sobe normalmente, mas cai sempre no efeito procedural (glitch/
+scanlines) porque não encontra os vídeos de `data/videos/boot|transition`.
+Rode `uploadfs` de novo sempre que mudar algo em `data/`. Pra confirmar que
+os vídeos foram encontrados, veja o monitor serial no boot: deve aparecer
+`[MjpegPlayer] /videos/boot: 155 frames @ 30 fps` (e o mesmo pra
+`/videos/transition`). Se aparecer `nao encontrado`, é sinal de que o
+`uploadfs` não rodou (ou rodou antes de gerar os frames).
+
 WiFi e localização do clima (`WEATHER_LATITUDE`/`WEATHER_LONGITUDE`, padrão
 Belo Horizonte, MG) ficam em `src/config/Secrets.h` — arquivo local, gerado a
 partir de `Secrets.h.example`, nunca commitado.
