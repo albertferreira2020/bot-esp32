@@ -83,7 +83,9 @@ void GifPlayer::onDrawLine(GIFDRAW* pDraw) {
         if (dx < 0 || dx >= screenW) continue;
         uint8_t idx = src[i];
         if (pDraw->ucHasTransparency && idx == pDraw->ucTransparent) continue;
-        row[dx] = display_->tint(pal[idx]);
+        // Paleta vem em RGB565 padrão (GIF_PALETTE_RGB565_LE); o back-buffer
+        // espera swap565 — daí o toBufferOrder.
+        row[dx] = DisplayManager::toBufferOrder(display_->tint(pal[idx]));
     }
 }
 

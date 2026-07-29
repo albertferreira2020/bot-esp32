@@ -74,7 +74,9 @@ void MjpegPlayer::onBlock(int16_t x, int16_t y, uint16_t w, uint16_t h, uint16_t
         for (int col = 0; col < w; ++col) {
             int dx = x + col;
             if (dx < 0 || dx >= screenW) continue;
-            dst[dx] = display_->tint(srcRow[col]);
+            // srcRow vem em RGB565 padrão (setSwapBytes(false)); o back-buffer
+            // espera swap565 — daí o toBufferOrder.
+            dst[dx] = DisplayManager::toBufferOrder(display_->tint(srcRow[col]));
         }
     }
 }

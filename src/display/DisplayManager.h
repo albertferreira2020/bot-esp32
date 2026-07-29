@@ -55,9 +55,16 @@ class DisplayManager {
     uint16_t tint(uint32_t rgb888) const;
     uint16_t tint(uint16_t rgb565) const;
 
-    // Acesso direto a uma linha do back-buffer (RGB565), para players
-    // (GIF/MJPEG) que precisam escrever pixel a pixel. nullptr se y fora da tela.
+    // Acesso direto a uma linha do back-buffer, para players (GIF/MJPEG) que
+    // precisam escrever pixel a pixel. nullptr se y fora da tela.
     uint16_t* rawRow(int y);
+
+    // O back-buffer é rgb565_2Byte, que no LovyanGFX é o layout "swap565"
+    // (GGGBBBBB RRRRRGGG) — os bytes vêm trocados em relação ao RGB565
+    // padrão. Quem desenha pela API do LovyanGFX não se preocupa (ela
+    // converte), mas quem escreve direto via rawRow() PRECISA passar a cor
+    // por aqui, senão as cores saem distorcidas.
+    static uint16_t toBufferOrder(uint16_t rgb565) { return __builtin_bswap16(rgb565); }
 
    private:
     LGFX lgfx_;
