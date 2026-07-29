@@ -1,5 +1,6 @@
 #include "network/WeatherClient.h"
 
+#include <Arduino.h>
 #include <ArduinoJson.h>
 #include <HTTPClient.h>
 #include <WiFiClientSecure.h>
@@ -25,14 +26,24 @@ bool WeatherClient::fetchForecast(WeatherData& out) {
 
     int code = http.GET();
     if (code != HTTP_CODE_OK) {
+        Serial.printf("[WeatherClient] HTTP %d\n", code);
         http.end();
         return false;
     }
 
-    JsonDocument doc;
-    DeserializationError err = deserializeJson(doc, http.getStream());
+    // getString() (e não getStream()) de propósito: o Open-Meteo responde com
+    // Transfer-Encoding: chunked, e ler o socket cru entrega os prefixos
+    // hexadecimais de tamanho de cada chunk junto com o JSON — o parser falha.
+    // getString() desfaz o chunking. A resposta tem ~1.1 KB, sem problema.
+    String payload = http.getString();
     http.end();
-    if (err) return false;
+
+    JsonDocument doc;
+    DeserializationError err = deserializeJson(doc, payload);
+    if (err) {
+        Serial.printf("[WeatherClient] JSON invalido: %s\n", err.c_str());
+        return false;
+    }
 
     JsonObject current = doc["current"];
     out.tempC = current["temperature_2m"] | 0.0f;

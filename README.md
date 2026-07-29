@@ -102,10 +102,12 @@ render, timing) já funciona.
 automaticamente se existirem (via `MjpegPlayer`); senão caem no efeito
 procedural equivalente (já incluso, funciona sem nenhum asset).
 
-**`data/videos/boot/` e `data/videos/transition/` já vêm preenchidos** — um
-efeito de "matrix digital" e uma hélice de DNA holográfica, ambos convertidos
-de vídeos baixados do Pinterest via `tools/pinterest_to_mjpeg.py`, cortados
-para 240x240, fundo preto preservado.
+**`data/videos/boot/` e `data/videos/transition/` já vêm preenchidos** —
+`boot/` é uma hélice de DNA holográfica e `transition/` uma chuva de código
+digital, ambos convertidos de vídeos baixados do Pinterest via
+`tools/pinterest_to_mjpeg.py`, cortados para 240x240, fundo preto preservado.
+Pra trocar qual vai em qual, basta rodar o script de novo apontando o vídeo
+para a pasta desejada.
 
 `data/videos/rain/` foi deixado vazio de propósito: o vídeo de chuva baixado
 tinha um céu cinza-claro ao fundo — ao forçar contraste/gamma pra chegar em
